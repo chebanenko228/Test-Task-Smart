@@ -18,10 +18,17 @@ class TicketController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request)
     {
-        //
+        $ticket = $this->ticketService->create($request->validated());
+
+        if ($request->hasFile('files')) {
+            $this->fileService->uploadFiles($ticket, $request->file('files'));
+        }
+
+        return new TicketResource($ticket->load('files'));
     }
+
 
     /**
      * Display the specified resource.
